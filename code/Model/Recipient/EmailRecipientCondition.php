@@ -38,11 +38,13 @@ class EmailRecipientCondition extends DataObject
         'ValueLessThanEqual' => 'Less than or equal',
         'ValueGreaterThan' => 'Greater than',
         'ValueGreaterThanEqual' => 'Greater than or equal',
-        'Includes' => 'Includes'
+        'Includes' => 'Includes',
+        'RegexMatches' => 'Regex matches: /^[a-z]/',
+        'RegexNotMatches' => "Regex doesn't match: /^[a-z]/",
     ];
 
     private static $db = [
-        'ConditionOption' => 'Enum("IsBlank,IsNotBlank,Equals,NotEquals,ValueLessThan,ValueLessThanEqual,ValueGreaterThan,ValueGreaterThanEqual,Includes")',
+        'ConditionOption' => 'Enum("IsBlank,IsNotBlank,Equals,NotEquals,ValueLessThan,ValueLessThanEqual,ValueGreaterThan,ValueGreaterThanEqual,Includes,RegexMatches,RegexNotMatches")',
         'ConditionValue' => 'Varchar'
     ];
 
@@ -101,6 +103,13 @@ class EmailRecipientCondition extends DataObject
                 $result = is_array($fieldValue)
                     ? in_array($conditionValue, $fieldValue)
                     : stripos($fieldValue ?? '', $conditionValue) !== false;
+                break;
+            case 'RegexNotMatches':
+            case 'RegexMatches':
+                $result = preg_match($conditionValue, $fieldValue);
+                if ($this->ConditionOption == 'RegexNotMatches') {
+                    $result = !($result);
+                }
                 break;
             default:
                 throw new LogicException("Unhandled rule {$this->ConditionOption}");
