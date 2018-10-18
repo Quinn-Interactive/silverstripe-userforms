@@ -37,11 +37,13 @@ class EmailRecipientCondition extends DataObject
         'ValueLessThan' => 'Less than',
         'ValueLessThanEqual' => 'Less than or equal',
         'ValueGreaterThan' => 'Greater than',
-        'ValueGreaterThanEqual' => 'Greater than or equal'
+        'ValueGreaterThanEqual' => 'Greater than or equal',
+        'RegexMatches' => 'Regex matches: /^[a-z]/',
+        'RegexNotMatches' => "Regex doesn't match: /^[a-z]/",
     ];
 
     private static $db = [
-        'ConditionOption' => 'Enum("IsBlank,IsNotBlank,Equals,NotEquals,ValueLessThan,ValueLessThanEqual,ValueGreaterThan,ValueGreaterThanEqual")',
+        'ConditionOption' => 'Enum("IsBlank,IsNotBlank,Equals,NotEquals,ValueLessThan,ValueLessThanEqual,ValueGreaterThan,ValueGreaterThanEqual,RegexMatches,RegexNotMatches")',
         'ConditionValue' => 'Varchar'
     ];
 
@@ -93,6 +95,13 @@ class EmailRecipientCondition extends DataObject
                     : $fieldValue == $conditionValue;
 
                 if ($this->ConditionOption == 'NotEquals') {
+                    $result = !($result);
+                }
+                break;
+            case 'RegexNotMatches':
+            case 'RegexMatches':
+                $result = preg_match($conditionValue, $fieldValue);
+                if ($this->ConditionOption == 'RegexNotMatches') {
                     $result = !($result);
                 }
                 break;
