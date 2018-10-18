@@ -100,7 +100,7 @@ class EmailRecipientCondition extends DataObject
                 break;
             case 'RegexNotMatches':
             case 'RegexMatches':
-                $result = preg_match($fieldValue, $conditionValue);
+                $result = preg_match($conditionValue, $fieldValue);
                 if ($this->ConditionOption == 'RegexNotMatches') {
                     $result = !($result);
                 }
