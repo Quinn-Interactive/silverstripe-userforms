@@ -38,8 +38,8 @@ class EmailRecipientCondition extends DataObject
         'ValueLessThanEqual' => 'Less than or equal',
         'ValueGreaterThan' => 'Greater than',
         'ValueGreaterThanEqual' => 'Greater than or equal',
-        'RegexMatches' => 'Regex Matches',
-        'RegexNotMatches' => "Regex Doesn't Match",
+        'RegexMatches' => 'Regex matches: /^[a-z]/',
+        'RegexNotMatches' => "Regex doesn't match: /^[a-z]/",
     ];
 
     private static $db = [
@@ -100,7 +100,7 @@ class EmailRecipientCondition extends DataObject
                 break;
             case 'RegexNotMatches':
             case 'RegexMatches':
-                $result = ($fieldValue > $conditionValue);
+                $result = preg_match($fieldValue, $conditionValue);
                 if ($this->ConditionOption == 'RegexNotMatches') {
                     $result = !($result);
                 }
